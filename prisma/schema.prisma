@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model PlayerInfo {
+  id            Int    @id @default(autoincrement())
+  score         Int    @default(0)
+  currentChoice String @default("NONE") // "NONE" | "ROCK" | "PAPER" | "SCISSORS"
+
+  RoomInfo   RoomInfo @relation(fields: [roomInfoId], references: [id])
+  roomInfoId Int
+}
+
+model RoomInfo {
+  id      Int          @id @default(autoincrement())
+  players PlayerInfo[]
+}

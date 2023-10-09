@@ -1,0 +1,13 @@
+-- CreateTable
+CREATE TABLE "PlayerInfo" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "score" INTEGER NOT NULL,
+    "currentChoice" TEXT NOT NULL DEFAULT 'NONE',
+    "roomInfoId" INTEGER NOT NULL,
+    CONSTRAINT "PlayerInfo_roomInfoId_fkey" FOREIGN KEY ("roomInfoId") REFERENCES "RoomInfo" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "RoomInfo" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+);

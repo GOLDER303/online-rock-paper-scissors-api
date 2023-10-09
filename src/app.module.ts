@@ -1,17 +1,9 @@
 import { Module } from "@nestjs/common";
+import { PrismaModule } from "./prisma/prisma.module";
 import { RoomModule } from "./room/room.module";
-import { RedisModule } from "@songkeys/nestjs-redis";
 
 @Module({
-  imports: [
-    RoomModule,
-    RedisModule.forRoot({
-      config: {
-        host: "localhost",
-        port: 6379,
-      },
-    }),
-  ],
+  imports: [RoomModule, PrismaModule],
   controllers: [],
   providers: [],
 })
