@@ -8,9 +8,10 @@ datasource db {
 }
 
 model PlayerInfo {
-  id            Int    @id @default(autoincrement())
-  score         Int    @default(0)
-  currentChoice String @default("NONE") // "NONE" | "ROCK" | "PAPER" | "SCISSORS"
+  id            Int     @id @default(autoincrement())
+  score         Int     @default(0)
+  currentChoice String  @default("NONE") // "NONE" | "ROCK" | "PAPER" | "SCISSORS"
+  connected     Boolean @default(false)
 
   RoomInfo   RoomInfo @relation(fields: [roomInfoId], references: [id])
   roomInfoId Int

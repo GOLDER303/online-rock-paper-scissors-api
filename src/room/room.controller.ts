@@ -12,6 +12,6 @@ export class RoomController {
 
   @Get("/:id")
   async getRoom(@Param("id") roomId: string) {
-    return this.roomService.getRoom(parseInt(roomId));
+    return this.roomService.getRoomInfo(parseInt(roomId));
   }
 }
