@@ -27,6 +27,7 @@ export class RoomGateway implements OnGatewayDisconnect {
     }
 
     client.data.playerId = playerId;
+    client.data.roomId = parseInt(roomId);
 
     client.join(roomId.toString());
 
@@ -40,5 +41,29 @@ export class RoomGateway implements OnGatewayDisconnect {
   @SubscribeMessage("room:leave")
   async leaveRoom(client: Socket) {
     await this.roomService.leaveRoom(client.data["playerId"]);
+  }
+
+  @SubscribeMessage("room:choice")
+  async makeChoice(client: Socket, choice: string) {
+    const roomId = client.data["roomId"] as number;
+    const playerId = client.data["playerId"] as number;
+
+    if (!roomId || !playerId) {
+      client.emit("error", "You need to be in room to make choice");
+      return;
+    }
+
+    if (!this.roomService.isPlayerChoiceValid(choice)) {
+      client.emit("error", `The choice: ${choice} is invalid`);
+      return;
+    }
+
+    await this.roomService.makeChoice(roomId, playerId, choice);
+
+    const roomInfo = await this.roomService.getRoomInfo(
+      parseInt(roomId.toString()),
+    );
+
+    this.wss.to(roomId.toString()).emit("room:update", roomInfo);
   }
 }
