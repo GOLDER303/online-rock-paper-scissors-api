@@ -2,19 +2,22 @@ import { Injectable } from "@nestjs/common";
 import { RoomInfo } from "@prisma/client";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PlayerChoice } from "src/types/player-choice.type";
+import { RoomCreateResponseDTO } from "./dtos/room-create-response.dto";
 
 @Injectable()
 export class RoomService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createRoom(): Promise<RoomInfo> {
-    return await this.prisma.roomInfo.create({
+  async createRoom(): Promise<RoomCreateResponseDTO> {
+    const createdRoom = await this.prisma.roomInfo.create({
       data: {
         players: {
           create: [{}, {}],
         },
       },
     });
+
+    return { roomId: createdRoom.id };
   }
 
   async getRoomInfo(roomId: number): Promise<RoomInfo> {
