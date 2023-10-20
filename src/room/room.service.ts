@@ -22,7 +22,6 @@ export class RoomService {
   }
 
   async getRoomInfo(roomId: number): Promise<RoomInfoDTO> {
-    console.log(roomId);
     const roomInfo = await this.prisma.roomInfo.findUnique({
       where: { id: roomId },
       select: {
