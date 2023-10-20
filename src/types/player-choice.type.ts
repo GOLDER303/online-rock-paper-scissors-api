@@ -1,1 +1,1 @@
-export type PlayerChoice = "ROCK" | "PAPER" | "SCISSORS";
+export type PlayerChoice = "NONE" | "ROCK" | "PAPER" | "SCISSORS";

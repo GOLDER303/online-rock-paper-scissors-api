@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { RoomInfo } from "@prisma/client";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PlayerChoice } from "src/types/player-choice.type";
+import { PlayerIntoDTO } from "./dtos/player-info.dto";
 import { RoomCreateResponseDTO } from "./dtos/room-create-response.dto";
+import { RoomInfoDTO } from "./dtos/room-info.dto";
 
 @Injectable()
 export class RoomService {
@@ -20,8 +21,9 @@ export class RoomService {
     return { roomId: createdRoom.id };
   }
 
-  async getRoomInfo(roomId: number): Promise<RoomInfo> {
-    return await this.prisma.roomInfo.findUnique({
+  async getRoomInfo(roomId: number): Promise<RoomInfoDTO> {
+    console.log(roomId);
+    const roomInfo = await this.prisma.roomInfo.findUnique({
       where: { id: roomId },
       select: {
         id: true,
@@ -35,6 +37,20 @@ export class RoomService {
         },
       },
     });
+
+    const players: PlayerIntoDTO[] = roomInfo.players.map<PlayerIntoDTO>(
+      (playerInfo) => {
+        return {
+          ...playerInfo,
+          currentChoice: playerInfo.currentChoice as PlayerChoice,
+        };
+      },
+    );
+
+    return {
+      roomId: roomInfo.id,
+      players,
+    };
   }
 
   async joinRoom(roomId: number): Promise<number> {
@@ -49,7 +65,7 @@ export class RoomService {
     const connectedPlayers = roomInfo.players;
 
     if (connectedPlayers.length == 0) {
-      return -1;
+      throw new InternalServerErrorException();
     }
 
     await this.prisma.playerInfo.update({
