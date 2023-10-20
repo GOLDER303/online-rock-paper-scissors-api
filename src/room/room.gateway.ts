@@ -11,12 +11,15 @@ import { RoomService } from "./room.service";
 export class RoomGateway implements OnGatewayDisconnect {
   constructor(private readonly roomService: RoomService) {}
 
-  async handleDisconnect(client: Socket) {
-    await this.roomService.leaveRoom(client.data["playerId"]);
-  }
-
   @WebSocketServer()
   wss: Server;
+
+  async handleDisconnect(client: Socket) {
+    const roomId = await this.roomService.leaveRoom(client.data["playerId"]);
+    const roomInfo = await this.roomService.getRoomInfo(roomId);
+
+    this.wss.to(roomId.toString()).emit("room:update", roomInfo);
+  }
 
   @SubscribeMessage("room:join")
   async joinRoom(client: Socket, roomId: string) {

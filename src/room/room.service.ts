@@ -60,11 +60,14 @@ export class RoomService {
     return connectedPlayers[0].id;
   }
 
-  async leaveRoom(playerId: number) {
-    await this.prisma.playerInfo.update({
+  async leaveRoom(playerId: number): Promise<number> {
+    const playerInfo = await this.prisma.playerInfo.update({
       where: { id: playerId },
       data: { connected: false, currentChoice: "NONE" },
+      select: { roomInfoId: true },
     });
+
+    return playerInfo.roomInfoId;
   }
 
   isPlayerChoiceValid(choice: string): choice is PlayerChoice {
