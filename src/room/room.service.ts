@@ -61,18 +61,18 @@ export class RoomService {
       },
     });
 
-    const connectedPlayers = roomInfo.players;
+    const notConnectedPlayers = roomInfo.players;
 
-    if (connectedPlayers.length == 0) {
+    if (notConnectedPlayers.length == 0) {
       return -1;
     }
 
     await this.prisma.playerInfo.update({
-      where: { id: connectedPlayers[0].id },
+      where: { id: notConnectedPlayers[0].id },
       data: { connected: true },
     });
 
-    return connectedPlayers[0].id;
+    return notConnectedPlayers[0].id;
   }
 
   async leaveRoom(playerId: number): Promise<number> {
