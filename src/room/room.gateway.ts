@@ -26,7 +26,8 @@ export class RoomGateway implements OnGatewayDisconnect {
     const playerId = await this.roomService.joinRoom(parseInt(roomId));
 
     if (playerId == -1) {
-      client.emit("room:full");
+      client.emit("error", "Room is full");
+      return;
     }
 
     client.data.playerId = playerId;

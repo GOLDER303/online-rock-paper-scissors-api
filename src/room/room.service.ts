@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { PlayerChoice } from "src/types/player-choice.type";
 import { PlayerIntoDTO } from "./dtos/player-info.dto";
@@ -64,7 +64,7 @@ export class RoomService {
     const connectedPlayers = roomInfo.players;
 
     if (connectedPlayers.length == 0) {
-      throw new InternalServerErrorException();
+      return -1;
     }
 
     await this.prisma.playerInfo.update({
