@@ -104,7 +104,7 @@ export class RoomService {
     );
 
     if (secondPlayerInfo.currentChoice == "NONE") {
-      this.updatePlayerCurrentChoice(playerId, choice);
+      await this.updatePlayerCurrentChoice(playerId, choice);
       return;
     }
 
