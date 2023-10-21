@@ -7,7 +7,7 @@ import {
 import { Server, Socket } from "socket.io";
 import { RoomService } from "./room.service";
 
-@WebSocketGateway()
+@WebSocketGateway({ cors: { origin: "http://localhost:5173" } })
 export class RoomGateway implements OnGatewayDisconnect {
   constructor(private readonly roomService: RoomService) {}
 
