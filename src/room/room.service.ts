@@ -76,6 +76,10 @@ export class RoomService {
   }
 
   async leaveRoom(playerId: number): Promise<number> {
+    if (!playerId) {
+      return -1;
+    }
+
     const playerInfo = await this.prisma.playerInfo.update({
       where: { id: playerId },
       data: { connected: false, currentChoice: "NONE" },

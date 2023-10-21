@@ -15,7 +15,16 @@ export class RoomGateway implements OnGatewayDisconnect {
   wss: Server;
 
   async handleDisconnect(client: Socket) {
+    if (!client.data["playerId"]) {
+      return;
+    }
+
     const roomId = await this.roomService.leaveRoom(client.data["playerId"]);
+
+    if (roomId == -1) {
+      return;
+    }
+
     const roomInfo = await this.roomService.getRoomInfo(roomId);
 
     this.wss.to(roomId.toString()).emit("room:update", roomInfo);
@@ -44,6 +53,10 @@ export class RoomGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage("room:leave")
   async leaveRoom(client: Socket) {
+    if (!client.data["playerId"]) {
+      return;
+    }
+
     await this.roomService.leaveRoom(client.data["playerId"]);
   }
 
