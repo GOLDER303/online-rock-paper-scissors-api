@@ -30,6 +30,7 @@ export class RoomService {
           select: {
             id: true,
             currentChoice: true,
+            previousChoice: true,
             score: true,
             connected: true,
           },
@@ -42,6 +43,7 @@ export class RoomService {
         return {
           ...playerInfo,
           currentChoice: playerInfo.currentChoice as PlayerChoice,
+          previousChoice: playerInfo.previousChoice as PlayerChoice,
         };
       },
     );
@@ -103,8 +105,9 @@ export class RoomService {
       (playerInfo) => playerInfo.id != playerId,
     );
 
+    await this.updatePlayerCurrentChoice(playerId, choice);
+
     if (secondPlayerInfo.currentChoice == "NONE") {
-      await this.updatePlayerCurrentChoice(playerId, choice);
       return;
     }
 
@@ -147,7 +150,10 @@ export class RoomService {
   async updatePlayerCurrentChoice(playerId: number, newChoice: PlayerChoice) {
     await this.prisma.playerInfo.update({
       where: { id: playerId },
-      data: { currentChoice: newChoice },
+      data: {
+        currentChoice: newChoice,
+        previousChoice: newChoice,
+      },
     });
   }
 
