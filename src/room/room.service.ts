@@ -26,6 +26,7 @@ export class RoomService {
       where: { id: roomId },
       select: {
         id: true,
+        round: true,
         players: {
           select: {
             id: true,
@@ -50,6 +51,7 @@ export class RoomService {
 
     return {
       roomId: roomInfo.id,
+      round: roomInfo.round,
       players,
     };
   }
@@ -122,6 +124,7 @@ export class RoomService {
       await this.addPointToPlayer(secondPlayerInfo.id);
     }
 
+    await this.increaseRoundNumber(roomId);
     await this.resetChoice(playerId, secondPlayerInfo.id);
   }
 
@@ -172,5 +175,12 @@ export class RoomService {
     } else {
       return 2;
     }
+  }
+
+  async increaseRoundNumber(roomId: number) {
+    await this.prisma.roomInfo.update({
+      where: { id: roomId },
+      data: { round: { increment: 1 } },
+    });
   }
 }

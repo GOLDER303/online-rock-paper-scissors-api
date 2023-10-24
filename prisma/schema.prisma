@@ -20,5 +20,6 @@ model PlayerInfo {
 
 model RoomInfo {
   id      Int          @id @default(autoincrement())
+  round   Int          @default(0)
   players PlayerInfo[]
 }
